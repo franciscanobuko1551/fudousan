@@ -73,6 +73,28 @@
         <div id="answer" class="answer-body empty">
           相談内容を入力してボタンを押すと、Kokoro Navi AIがやさしく気持ちを整理します。
         </div>
+
+        <div class="follow-up-panel" aria-labelledby="follow-up-title">
+          <h3 id="follow-up-title">もう少し深く聞く</h3>
+          <p>回答を見て、必要な形でもう一度やさしく整理できます。</p>
+          <div class="follow-up-actions">
+            <button type="button" class="secondary-button" data-mode="gentle" disabled>もっとやさしく</button>
+            <button type="button" class="secondary-button" data-mode="steps" disabled>具体的な一歩</button>
+            <button type="button" class="secondary-button" data-mode="organize" disabled>気持ちを整理</button>
+            <button type="button" class="secondary-button" data-mode="hope" disabled>未来への励まし</button>
+          </div>
+        </div>
+
+        <div class="history-panel" aria-labelledby="history-title">
+          <div class="history-heading">
+            <div>
+              <h3 id="history-title">最近の相談</h3>
+              <p>この端末のブラウザにだけ保存されます。</p>
+            </div>
+            <button type="button" id="clear-history" class="text-button">履歴を削除</button>
+          </div>
+          <div id="history-list" class="history-list empty-history">まだ相談履歴はありません。</div>
+        </div>
       </section>
     </main>
 

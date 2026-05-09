@@ -35,6 +35,15 @@ const crisisKeywords = [
   "逃げたい",
 ];
 
+
+const modeInstructions = {
+  initial: "通常の相談として、気持ちの受け止めと整理を中心に答えてください。",
+  gentle: "前回よりさらにやわらかく、包み込むような言葉で、安心感を優先して答えてください。",
+  steps: "今日できる小さな一歩を、無理のない範囲で1〜3個に絞って具体的に提案してください。",
+  organize: "ユーザーの気持ちと状況を、責めずに箇条書きでやさしく整理してください。",
+  hope: "未来に向けた小さな希望が見えるように、励ましを中心に答えてください。",
+};
+
 const genreHints = {
   人生相談: "人生は、すぐに答えを出さなくても大丈夫です。今のあなたが大切にしたいことを一緒に見つめていきましょう。",
   心のモヤモヤ: "モヤモヤは、心が何かを知らせてくれているサインかもしれません。まずは言葉にできたこと自体が一歩です。",
@@ -104,14 +113,24 @@ function createCrisisReply() {
   ].join("\n\n");
 }
 
-function createFallbackReply(genre, message) {
+function createFallbackReply(genre, message, mode = "initial") {
   const hint = genreHints[genre] ?? genreHints.人生相談;
-
-  return [
+  const baseReply = [
     `お話ししてくれてありがとうございます。${genre}について、今とても丁寧に向き合おうとしているのですね。`,
     `「${message}」という気持ちがあるのは、決して弱さではありません。ここまで頑張ってきたあなたの心が、少し立ち止まってほしいと教えてくれているのかもしれません。`,
     hint,
-    "まずは、今の気持ちに一つだけ名前をつけてみてください。次に、深呼吸をする、紙に書く、信頼できる人に一言話すなど、今日できるいちばん小さな行動を一つだけ選びましょう。",
+  ];
+
+  const modeReplies = {
+    gentle: "今は、がんばって前向きになろうとしなくても大丈夫です。まずは『そう感じている自分がいるんだな』と、そっと認めるだけで十分です。",
+    steps: "今日の小さな一歩は、紙に今の気持ちを三つだけ書くことです。できたら、その中で一番軽くできそうなことを一つ選んでみましょう。",
+    organize: "整理すると、今は『気持ちが重いこと』『先が見えにくいこと』『それでも変わりたい気持ちがあること』が重なっているのかもしれません。",
+    hope: "今はまだ道がはっきり見えなくても、こうして言葉にできたことが未来への小さな灯りです。焦らず、その灯りを一緒に守っていきましょう。",
+  };
+
+  return [
+    ...baseReply,
+    modeReplies[mode] ?? "まずは、今の気持ちに一つだけ名前をつけてみてください。次に、深呼吸をする、紙に書く、信頼できる人に一言話すなど、今日できるいちばん小さな行動を一つだけ選びましょう。",
     "あなたは一人で急いで答えを出さなくて大丈夫。ここから少しずつ、安心できる未来の輪郭を一緒に整えていきましょう。",
   ].join("\n\n");
 }
@@ -131,7 +150,7 @@ function extractOutputText(data) {
   return text || "うまく言葉にできませんでした。少し時間をおいて、もう一度話しかけてくださいね。";
 }
 
-async function createAiReply(genre, message) {
+async function createAiReply(genre, message, mode = "initial") {
   if (hasCrisisSignal(message)) {
     return {
       source: "safety",
@@ -142,7 +161,7 @@ async function createAiReply(genre, message) {
   if (!openAiApiKey) {
     return {
       source: "fallback",
-      reply: createFallbackReply(genre, message),
+      reply: createFallbackReply(genre, message, mode),
     };
   }
 
@@ -155,7 +174,7 @@ async function createAiReply(genre, message) {
     body: JSON.stringify({
       model: openAiModel,
       instructions: systemPrompt,
-      input: `相談ジャンル: ${genre}\n相談内容: ${message}`,
+      input: `相談ジャンル: ${genre}\n深掘りの方向: ${modeInstructions[mode] ?? modeInstructions.initial}\n相談内容: ${message}`,
       max_output_tokens: 900,
       store: false,
     }),
@@ -179,6 +198,7 @@ async function handleChat(request, response) {
     const body = await readJsonBody(request);
     const genre = String(body.genre ?? "人生相談").trim();
     const message = String(body.message ?? "").trim();
+    const mode = String(body.mode ?? "initial").trim();
 
     if (!message) {
       sendJson(response, 400, {
@@ -187,7 +207,7 @@ async function handleChat(request, response) {
       return;
     }
 
-    const aiReply = await createAiReply(genre, message);
+    const aiReply = await createAiReply(genre, message, mode);
     sendJson(response, 200, aiReply);
   } catch (error) {
     sendJson(response, 500, {
