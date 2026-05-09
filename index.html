@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kokoro Navi AI | 心を整えるAI相談室</title>
+    <meta
+      name="description"
+      content="Kokoro Navi AIは、心を整え、未来へ進むためのやさしいAI相談室です。"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero" aria-labelledby="page-title">
+        <p class="eyebrow">AI相談室</p>
+        <h1 id="page-title">Kokoro Navi AI</h1>
+        <p class="hero-copy">心を整え、未来へ進むためのAI相談室</p>
+        <p class="hero-note">
+          否定せず、急かさず、あなたの気持ちをやわらかく整理します。
+        </p>
+      </section>
+
+      <section class="counselor-card" aria-labelledby="form-title">
+        <div class="card-heading">
+          <span class="icon" aria-hidden="true">🌸</span>
+          <div>
+            <h2 id="form-title">今の気持ちを聞かせてください</h2>
+            <p>短い言葉でも大丈夫です。ゆっくり書いてくださいね。</p>
+          </div>
+        </div>
+
+        <form id="consultation-form" class="consultation-form">
+          <label for="genre">相談ジャンル</label>
+          <select id="genre" name="genre" required>
+            <option value="人生相談">人生相談</option>
+            <option value="心のモヤモヤ">心のモヤモヤ</option>
+            <option value="不安">不安</option>
+            <option value="人間関係">人間関係</option>
+            <option value="50代からの生き方">50代からの生き方</option>
+            <option value="起業の悩み">起業の悩み</option>
+            <option value="自分らしい未来">自分らしい未来</option>
+          </select>
+
+          <label for="message">相談内容</label>
+          <textarea
+            id="message"
+            name="message"
+            rows="7"
+            placeholder="例：これからの働き方に不安があります。何から考えればいいかわかりません。"
+            required
+          ></textarea>
+
+          <button type="submit">やさしく整理してもらう</button>
+        </form>
+
+        <div class="safety-note" role="note" aria-label="安心して使うための案内">
+          <strong>安心して使うために</strong>
+          <p>
+            Kokoro Navi AIは、医療・法律・緊急対応の代わりではありません。
+            今すぐ危ないと感じるときは、身近な人、地域の緊急窓口、医療機関、緊急通報につながってください。
+          </p>
+        </div>
+      </section>
+
+      <section class="answer-card" aria-live="polite" aria-labelledby="answer-title">
+        <div class="answer-heading">
+          <span class="avatar" aria-hidden="true">🕊️</span>
+          <div>
+            <h2 id="answer-title">AIからのメッセージ</h2>
+            <p>ここに、あなたの心に寄り添う返事が表示されます。</p>
+            <span class="api-note">APIキー未設定でも試作応答で動きます</span>
+          </div>
+        </div>
+        <div id="answer" class="answer-body empty">
+          相談内容を入力してボタンを押すと、Kokoro Navi AIがやさしく気持ちを整理します。
+        </div>
+
+        <div class="follow-up-panel" aria-labelledby="follow-up-title">
+          <h3 id="follow-up-title">もう少し深く聞く</h3>
+          <p>回答を見て、必要な形でもう一度やさしく整理できます。</p>
+          <div class="follow-up-actions">
+            <button type="button" class="secondary-button" data-mode="gentle" disabled>もっとやさしく</button>
+            <button type="button" class="secondary-button" data-mode="steps" disabled>具体的な一歩</button>
+            <button type="button" class="secondary-button" data-mode="organize" disabled>気持ちを整理</button>
+            <button type="button" class="secondary-button" data-mode="hope" disabled>未来への励まし</button>
+          </div>
+        </div>
+
+        <div class="history-panel" aria-labelledby="history-title">
+          <div class="history-heading">
+            <div>
+              <h3 id="history-title">最近の相談</h3>
+              <p>この端末のブラウザにだけ保存されます。</p>
+            </div>
+            <button type="button" id="clear-history" class="text-button">履歴を削除</button>
+          </div>
+          <div id="history-list" class="history-list empty-history">まだ相談履歴はありません。</div>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
