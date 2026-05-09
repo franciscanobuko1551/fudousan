@@ -9,6 +9,7 @@ const clearHistoryButton = document.querySelector("#clear-history");
 
 const historyStorageKey = "kokoro-navi-ai:consultation-history";
 const maxHistoryItems = 8;
+const maxMessageLength = 2000;
 
 let currentConsultation = null;
 
@@ -44,13 +45,17 @@ function getHistory() {
 }
 
 function saveHistoryItem(item) {
-  const history = [item, ...getHistory()].slice(0, maxHistoryItems);
-  localStorage.setItem(historyStorageKey, JSON.stringify(history));
+  try {
+    const history = [item, ...getHistory()].slice(0, maxHistoryItems);
+    localStorage.setItem(historyStorageKey, JSON.stringify(history));
+  } catch {
+    showAnswer(`${item.reply}\n\n※ このブラウザでは相談履歴を保存できませんでした。回答はこの画面で確認できます。`);
+  }
   renderHistory();
 }
 
 function createHistoryId() {
-  return crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  return globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
 function formatDate(isoDate) {
@@ -110,7 +115,7 @@ async function requestAiReply(genre, message, mode = "initial") {
     body: JSON.stringify({ genre, message, mode }),
   });
 
-  const data = await response.json();
+  const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
     throw new Error(data.error ?? "返事を受け取れませんでした。");
@@ -162,6 +167,14 @@ form.addEventListener("submit", async (event) => {
     return;
   }
 
+  if (message.length > maxMessageLength) {
+    showAnswer(`相談内容が少し長いようです。まずは${maxMessageLength}文字以内に短くして、いちばん聞いてほしいことから送ってくださいね。`, {
+      isEmpty: false,
+    });
+    messageInput.focus();
+    return;
+  }
+
   await sendConsultation({ genre, message });
 });
 
@@ -180,7 +193,13 @@ followUpButtons.forEach((button) => {
 });
 
 clearHistoryButton.addEventListener("click", () => {
-  localStorage.removeItem(historyStorageKey);
+  try {
+    localStorage.removeItem(historyStorageKey);
+  } catch {
+    showAnswer("このブラウザでは履歴を削除できませんでした。ブラウザ設定からサイトデータを削除してくださいね。", {
+      isEmpty: false,
+    });
+  }
   renderHistory();
 });
 

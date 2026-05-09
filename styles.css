@@ -207,7 +207,7 @@ button {
 }
 
 button:disabled {
-  cursor: wait;
+  cursor: not-allowed;
   opacity: 0.72;
 }
 
@@ -228,6 +228,31 @@ button:focus-visible:not(:disabled) {
 
 .answer-body.empty {
   color: var(--muted);
+}
+
+.safety-note {
+  margin-top: 20px;
+  border: 1px solid rgba(185, 147, 75, 0.18);
+  border-radius: 18px;
+  padding: 16px;
+  background: rgba(255, 253, 251, 0.72);
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.safety-note strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.safety-note p {
+  margin: 0;
+}
+
+.answer-body.loading + .follow-up-panel button:disabled,
+.consultation-form button:disabled {
+  cursor: wait;
 }
 
 .answer-body.loading {

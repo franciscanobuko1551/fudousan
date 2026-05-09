@@ -1,14 +1,15 @@
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { createServer } from "node:http";
-import { extname, join, normalize } from "node:path";
+import { extname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
-const publicDir = __dirname;
+const publicDir = resolve(__dirname);
 const port = Number(process.env.PORT ?? 4173);
 const openAiApiKey = process.env.OPENAI_API_KEY;
 const openAiModel = process.env.OPENAI_MODEL ?? "gpt-5.1";
+const maxMessageLength = 2000;
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -54,6 +55,16 @@ const genreHints = {
   自分らしい未来: "自分らしい未来は、誰かの正解ではなく、あなたの心が少しあたたかくなる方向にあります。",
 };
 
+const allowedGenres = new Set(Object.keys(genreHints));
+const allowedModes = new Set(Object.keys(modeInstructions));
+
+class UserFacingError extends Error {
+  constructor(message, statusCode = 400) {
+    super(message);
+    this.statusCode = statusCode;
+  }
+}
+
 const systemPrompt = `あなたは「Kokoro Navi AI」です。
 心を整え、未来へ進むためのAI相談室として、次の人格を必ず守ってください。
 - 否定しない
@@ -91,12 +102,16 @@ async function readJsonBody(request) {
   for await (const chunk of request) {
     body += chunk;
 
-    if (body.length > 12000) {
-      throw new Error("相談内容が長すぎます。少し短くして、もう一度送ってください。");
+    if (body.length > maxMessageLength * 6) {
+      throw new UserFacingError("相談内容が長すぎます。少し短くして、もう一度送ってください。", 413);
     }
   }
 
-  return JSON.parse(body || "{}");
+  try {
+    return JSON.parse(body || "{}");
+  } catch {
+    throw new UserFacingError("送信内容を読み取れませんでした。ページを更新して、もう一度送ってください。");
+  }
 }
 
 
@@ -183,8 +198,8 @@ async function createAiReply(genre, message, mode = "initial") {
   const data = await apiResponse.json();
 
   if (!apiResponse.ok) {
-    const messageFromApi = data.error?.message ?? "AIから返事を受け取れませんでした。";
-    throw new Error(messageFromApi);
+    console.error("OpenAI API error", data.error ?? data);
+    throw new Error("AIから返事を受け取れませんでした。少し時間をおいて、もう一度送ってくださいね。");
   }
 
   return {
@@ -196,9 +211,11 @@ async function createAiReply(genre, message, mode = "initial") {
 async function handleChat(request, response) {
   try {
     const body = await readJsonBody(request);
-    const genre = String(body.genre ?? "人生相談").trim();
+    const requestedGenre = String(body.genre ?? "人生相談").trim();
     const message = String(body.message ?? "").trim();
-    const mode = String(body.mode ?? "initial").trim();
+    const requestedMode = String(body.mode ?? "initial").trim();
+    const genre = allowedGenres.has(requestedGenre) ? requestedGenre : "人生相談";
+    const mode = allowedModes.has(requestedMode) ? requestedMode : "initial";
 
     if (!message) {
       sendJson(response, 400, {
@@ -207,12 +224,22 @@ async function handleChat(request, response) {
       return;
     }
 
+    if (message.length > maxMessageLength) {
+      sendJson(response, 413, {
+        error: `相談内容が少し長いようです。まずは${maxMessageLength}文字以内で、いちばん聞いてほしいことから送ってくださいね。`,
+      });
+      return;
+    }
+
     const aiReply = await createAiReply(genre, message, mode);
     sendJson(response, 200, aiReply);
   } catch (error) {
-    sendJson(response, 500, {
-      error: "ごめんなさい。今は少し返事に時間がかかっているようです。深呼吸して、少ししてからもう一度送ってくださいね。",
-      detail: error instanceof Error ? error.message : "Unknown error",
+    console.error(error);
+    sendJson(response, error instanceof UserFacingError ? error.statusCode : 500, {
+      error:
+        error instanceof UserFacingError
+          ? error.message
+          : "ごめんなさい。今は少し返事に時間がかかっているようです。深呼吸して、少ししてからもう一度送ってくださいね。",
     });
   }
 }
@@ -220,10 +247,10 @@ async function handleChat(request, response) {
 async function serveStatic(request, response) {
   const requestUrl = new URL(request.url ?? "/", `http://${request.headers.host}`);
   const pathname = requestUrl.pathname === "/" ? "/index.html" : requestUrl.pathname;
-  const safePath = normalize(decodeURIComponent(pathname)).replace(/^(\.\.[/\\])+/, "");
-  const filePath = join(publicDir, safePath);
+  const filePath = resolve(join(publicDir, decodeURIComponent(pathname)));
+  const relativePath = relative(publicDir, filePath);
 
-  if (!filePath.startsWith(publicDir)) {
+  if (relativePath.startsWith("..") || relativePath === "" || relativePath.includes("../")) {
     response.writeHead(403);
     response.end("Forbidden");
     return;
@@ -240,6 +267,12 @@ async function serveStatic(request, response) {
       "Content-Type": mimeTypes[extname(filePath)] ?? "application/octet-stream",
       "Cache-Control": "no-cache",
     });
+
+    if (request.method === "HEAD") {
+      response.end();
+      return;
+    }
+
     createReadStream(filePath).pipe(response);
   } catch {
     response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
@@ -248,7 +281,9 @@ async function serveStatic(request, response) {
 }
 
 const server = createServer(async (request, response) => {
-  if (request.method === "POST" && request.url === "/api/chat") {
+  const requestUrl = new URL(request.url ?? "/", `http://${request.headers.host}`);
+
+  if (request.method === "POST" && requestUrl.pathname === "/api/chat") {
     await handleChat(request, response);
     return;
   }
