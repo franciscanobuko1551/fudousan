@@ -1,0 +1,14 @@
+{
+  "name": "kokoro-navi-ai",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "check": "node --check server.mjs && node --check script.js",
+    "screenshot:mobile": "playwright screenshot --viewport-size=390,900 http://127.0.0.1:4173 screenshots/mobile.png"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
