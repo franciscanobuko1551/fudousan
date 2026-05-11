@@ -49,6 +49,7 @@ Kokoro Navi AI は、人生相談、心のモヤモヤ、不安、人間関係�
 - 緊急性が疑われる相談で安全確保を優先できる。
 - `npm run check` が成功する。
 - `npm run smoke` でトップページ、通常相談、緊急分岐、静的配信の基本安全性を確認できる。
+- `npm run check:consultation` で代表的な相談APIケースを確認できる。
 
 ### Phase 1: クローズドMVP
 
@@ -101,6 +102,7 @@ Kokoro Navi AI は、人生相談、心のモヤモヤ、不安、人間関係�
 - Phaseが進むたびに、この文書の「現在のPhase」と完了条件を更新する。
 - 変更後は最低限 `npm run check` を実行する。
 - サーバー動作や配信範囲を変えた場合は `npm run smoke` も実行する。
+- 相談API、ジャンル、深掘りモード、安全分岐を変えた場合は `npm run check:consultation` も実行する。
 
 ## 安全ポリシーの補足
 
@@ -157,6 +159,8 @@ Phase 0.5 では、ビルド工程なしで動かしやすい単純な構成を�
 │   ├── development-rules.md
 │   └── legal-and-safety-drafts.md
 ├── scripts/
+│   ├── check-helpers.mjs
+│   ├── consultation-cases-check.mjs
 │   └── smoke-check.mjs
 └── screenshots/
     └── .gitkeep
@@ -212,3 +216,16 @@ Phase 0.5では、リリース前や大きなUI変更時に次を確認する。
 - 緊急性が疑われる入力で安全確保を優先した回答になる。
 - `/server.mjs`、`/package.json`、`/.git/config` が配信されない。
 - 不正なURLエンコードでサーバーが終了しない。
+
+## 相談ケース自動確認
+
+`npm run check:consultation` では、Phase 1に向けて次のAPI挙動を確認する。
+
+- 空の相談内容は 400 を返す。
+- 2000文字を超える相談内容は 413 を返す。
+- 未知の相談ジャンルは人生相談として扱う。
+- `gentle`、`steps`、`organize`、`hope` の深掘りモードが通る。
+- 未知の深掘りモードは通常相談として扱う。
+- APIキー未設定時は `source: fallback` を返す。
+- 緊急キーワードを含む相談は `source: safety` を返す。
+- 静的ファイル以外のパスは 404 を返す。

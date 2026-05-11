@@ -83,4 +83,5 @@ npm run screenshot:mobile
 ```bash
 npm run check
 npm run smoke
+npm run check:consultation
 ```

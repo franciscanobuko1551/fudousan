@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "start": "node server.mjs",
-    "check": "node --check server.mjs && node --check script.js && node --check scripts/smoke-check.mjs",
+    "check": "node --check server.mjs && node --check script.js && node --check scripts/check-helpers.mjs && node --check scripts/smoke-check.mjs && node --check scripts/consultation-cases-check.mjs",
     "smoke": "node scripts/smoke-check.mjs",
+    "check:consultation": "node scripts/consultation-cases-check.mjs",
     "screenshot:mobile": "playwright screenshot --viewport-size=390,900 http://127.0.0.1:4173 screenshots/mobile.png"
   },
   "engines": {
