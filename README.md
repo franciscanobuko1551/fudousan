@@ -2,6 +2,12 @@
 
 心を整え、未来へ進むためのAI相談室の最小構成プロトタイプです。
 
+## 開発状況
+
+現在のプロジェクト名は **Kokoro Navi AI** です。
+
+このプロジェクトは、現時点では **Phase 0.5: AI相談体験プロトタイプ** として進めます。最終ゴールの仮説、Phase計画、開発ルール、フォルダ構成案は [docs/development-rules.md](docs/development-rules.md) にまとめています。
+
 ## できること
 
 - 相談ジャンルを選んで、今の気持ちを入力できます。
@@ -51,13 +57,13 @@ OPENAI_API_KEY=sk-... OPENAI_MODEL=gpt-5.1 npm start
 モバイル幅のスクリーンショットを取得する場合は、先にアプリを起動してください。
 
 ```bash
+npm install
 npm start
 ```
 
-別のターミナルで Playwright と Chromium を準備し、スクリーンショット用スクリプトを実行します。
+別のターミナルで Chromium を準備し、スクリーンショット用スクリプトを実行します。
 
 ```bash
-npm install -D playwright
 npx playwright install chromium
 npm run screenshot:mobile
 ```
@@ -66,7 +72,7 @@ npm run screenshot:mobile
 
 ### Playwright がない場合
 
-`playwright: command not found` や `Executable doesn't exist` が表示される場合は、Playwrightまたはブラウザ実行ファイルが未インストールです。上記の `npm install -D playwright` と `npx playwright install chromium` を実行してください。
+`playwright: command not found` や `Executable doesn't exist` が表示される場合は、Playwrightまたはブラウザ実行ファイルが未インストールです。上記の `npm install` と `npx playwright install chromium` を実行してください。
 
 ネットワーク制限などで npm registry やブラウザのダウンロードにアクセスできない環境では、スクリーンショット取得は実行できません。その場合は、ローカルPCまたは Playwright のブラウザ入りCIイメージなど、外部パッケージを取得できる環境で実行してください。
 
@@ -74,4 +80,5 @@ npm run screenshot:mobile
 
 ```bash
 npm run check
+npm run smoke
 ```

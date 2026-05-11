@@ -5,10 +5,14 @@
   "type": "module",
   "scripts": {
     "start": "node server.mjs",
-    "check": "node --check server.mjs && node --check script.js",
+    "check": "node --check server.mjs && node --check script.js && node --check scripts/smoke-check.mjs",
+    "smoke": "node scripts/smoke-check.mjs",
     "screenshot:mobile": "playwright screenshot --viewport-size=390,900 http://127.0.0.1:4173 screenshots/mobile.png"
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "playwright": "^1.59.1"
   }
 }

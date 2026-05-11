@@ -10,6 +10,7 @@ const port = Number(process.env.PORT ?? 4173);
 const openAiApiKey = process.env.OPENAI_API_KEY;
 const openAiModel = process.env.OPENAI_MODEL ?? "gpt-5.1";
 const maxMessageLength = 2000;
+const staticFiles = new Set(["/index.html", "/styles.css", "/script.js"]);
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -246,8 +247,26 @@ async function handleChat(request, response) {
 
 async function serveStatic(request, response) {
   const requestUrl = new URL(request.url ?? "/", `http://${request.headers.host}`);
-  const pathname = requestUrl.pathname === "/" ? "/index.html" : requestUrl.pathname;
-  const filePath = resolve(join(publicDir, decodeURIComponent(pathname)));
+
+  let pathname;
+
+  try {
+    pathname = decodeURIComponent(requestUrl.pathname);
+  } catch {
+    response.writeHead(400, { "Content-Type": "text/plain; charset=utf-8" });
+    response.end("Bad Request");
+    return;
+  }
+
+  const staticPath = pathname === "/" ? "/index.html" : pathname;
+
+  if (!staticFiles.has(staticPath)) {
+    response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+    response.end("Not found");
+    return;
+  }
+
+  const filePath = resolve(join(publicDir, staticPath.slice(1)));
   const relativePath = relative(publicDir, filePath);
 
   if (relativePath.startsWith("..") || relativePath === "" || relativePath.includes("../")) {
