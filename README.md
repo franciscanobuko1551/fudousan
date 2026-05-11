@@ -8,6 +8,8 @@
 
 このプロジェクトは、現時点では **Phase 0.5: AI相談体験プロトタイプ** として進めます。最終ゴールの仮説、Phase計画、開発ルール、フォルダ構成案は [docs/development-rules.md](docs/development-rules.md) にまとめています。
 
+Phase 1に向けた利用規約・プライバシーポリシー・免責文言の叩き台は [docs/legal-and-safety-drafts.md](docs/legal-and-safety-drafts.md) にまとめています。
+
 ## できること
 
 - 相談ジャンルを選んで、今の気持ちを入力できます。

@@ -62,6 +62,10 @@ Kokoro Navi AI は、人生相談、心のモヤモヤ、不安、人間関係�
 - 相談履歴や個人情報をどう扱うかの方針が明文化されている。
 - APIエラー、通信失敗、長文入力、履歴保存失敗の動作確認がある。
 
+準備中の叩き台:
+
+- [legal-and-safety-drafts.md](legal-and-safety-drafts.md): 利用規約、プライバシーポリシー、免責文言の下書き。
+
 ### Phase 2: 継続相談体験
 
 目的: 単発相談から、安心して継続利用できる相談体験へ広げる。
@@ -150,7 +154,8 @@ Phase 0.5 では、ビルド工程なしで動かしやすい単純な構成を�
 ├── script.js
 ├── server.mjs
 ├── docs/
-│   └── development-rules.md
+│   ├── development-rules.md
+│   └── legal-and-safety-drafts.md
 ├── scripts/
 │   └── smoke-check.mjs
 └── screenshots/
