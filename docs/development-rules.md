@@ -143,7 +143,7 @@ localStorage利用時の注意:
 
 ### 現在の構成
 
-Phase 0.5 では、ビルド工程なしで動かしやすい単純な構成を維持する。
+Phase 0.5 では、ビルド工程なしで動かしやすい構成を維持しつつ、Phase 1に向けてサーバー、ドメイン、静的UIの責務を分ける。
 
 ```text
 .
@@ -151,9 +151,6 @@ Phase 0.5 では、ビルド工程なしで動かしやすい単純な構成を�
 ├── README.md
 ├── package.json
 ├── package-lock.json
-├── index.html
-├── styles.css
-├── script.js
 ├── server.mjs
 ├── docs/
 │   ├── development-rules.md
@@ -162,13 +159,26 @@ Phase 0.5 では、ビルド工程なしで動かしやすい単純な構成を�
 │   ├── check-helpers.mjs
 │   ├── consultation-cases-check.mjs
 │   └── smoke-check.mjs
+├── src/
+│   ├── domain/
+│   │   ├── consultation-policy.mjs
+│   │   ├── crisis-detection.mjs
+│   │   └── fallback-replies.mjs
+│   ├── public/
+│   │   ├── index.html
+│   │   ├── script.js
+│   │   └── styles.css
+│   └── server/
+│       ├── app.mjs
+│       ├── openai-client.mjs
+│       └── static-files.mjs
 └── screenshots/
     └── .gitkeep
 ```
 
 ### Phase 1以降の候補
 
-機能が増えてから、次のように分割する。
+機能が増えたら、現在の `src/` 構成を保ったまま、テストと設計文書をさらに分ける。
 
 ```text
 .
@@ -177,18 +187,9 @@ Phase 0.5 では、ビルド工程なしで動かしやすい単純な構成を�
 │   ├── safety-policy.md
 │   └── product-notes.md
 ├── src/
+│   ├── domain/
 │   ├── public/
-│   │   ├── index.html
-│   │   ├── styles.css
-│   │   └── script.js
-│   ├── server/
-│   │   ├── app.mjs
-│   │   ├── openai-client.mjs
-│   │   └── static-files.mjs
-│   └── domain/
-│       ├── consultation-policy.mjs
-│       ├── crisis-detection.mjs
-│       └── fallback-replies.mjs
+│   └── server/
 ├── tests/
 │   ├── server.test.mjs
 │   └── consultation-policy.test.mjs
@@ -196,11 +197,11 @@ Phase 0.5 では、ビルド工程なしで動かしやすい単純な構成を�
 └── package.json
 ```
 
-今すぐ分割しない理由:
+次に分割する候補:
 
-- 現在は小さなプロトタイプで、ファイル数も少ない。
-- 先に分割すると、機能より構成の管理が重くなる。
-- Phase 1でテスト、規約、保存設計が増えた段階で分割したほうが自然。
+- `scripts/` の検証スクリプトを `tests/` へ移す。
+- `src/server/app.mjs` の `handleChat` をAPIルーターとして分離する。
+- サーバー側DB保存を導入する場合は `src/server/storage/` か `src/domain/consultation-history.mjs` を追加する。
 
 ## 手動確認リスト
 
