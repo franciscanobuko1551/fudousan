@@ -74,6 +74,19 @@ try {
     throw new Error("Top page did not include the project name.");
   }
 
+  const requiredPageTexts = [
+    "利用上の注意",
+    "診断、治療、法的判断、金融判断、緊急対応の代わりではありません",
+    "個人情報や第三者の情報を必要以上に入力しないでください",
+    "この相談をこの端末のブラウザだけに保存する",
+  ];
+
+  for (const text of requiredPageTexts) {
+    if (!html.includes(text)) {
+      throw new Error(`Top page did not include required safety text: ${text}`);
+    }
+  }
+
   await expectStatus("/server.mjs", 404);
   await expectStatus("/package.json", 404);
   await expectStatus("/.git/config", 404);
