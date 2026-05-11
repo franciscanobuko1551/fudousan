@@ -82,6 +82,7 @@ npm run screenshot:mobile
 
 ```bash
 npm run check
+npm test
 npm run smoke
 npm run check:consultation
 ```

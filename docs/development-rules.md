@@ -48,6 +48,7 @@ Kokoro Navi AI は、人生相談、心のモヤモヤ、不安、人間関係�
 - 回答コピーと新規相談リセットができる。
 - 緊急性が疑われる相談で安全確保を優先できる。
 - `npm run check` が成功する。
+- `npm test` でドメインロジックとAPIの自動テストが成功する。
 - `npm run smoke` でトップページ、通常相談、緊急分岐、静的配信の基本安全性を確認できる。
 - `npm run check:consultation` で代表的な相談APIケースを確認できる。
 
@@ -101,6 +102,7 @@ Kokoro Navi AI は、人生相談、心のモヤモヤ、不安、人間関係�
 - 画面文言、フォールバック応答、OpenAI用プロンプトの人格は揃える。
 - Phaseが進むたびに、この文書の「現在のPhase」と完了条件を更新する。
 - 変更後は最低限 `npm run check` を実行する。
+- ドメインロジックやAPI挙動を変えた場合は `npm test` を実行する。
 - サーバー動作や配信範囲を変えた場合は `npm run smoke` も実行する。
 - 相談API、ジャンル、深掘りモード、安全分岐を変えた場合は `npm run check:consultation` も実行する。
 
@@ -172,6 +174,13 @@ Phase 0.5 では、ビルド工程なしで動かしやすい構成を維持し�
 │       ├── app.mjs
 │       ├── openai-client.mjs
 │       └── static-files.mjs
+├── tests/
+│   ├── domain/
+│   │   └── consultation-policy.test.mjs
+│   ├── helpers/
+│   │   └── server-test-helpers.mjs
+│   └── server/
+│       └── app.test.mjs
 └── screenshots/
     └── .gitkeep
 ```
@@ -191,17 +200,25 @@ Phase 0.5 では、ビルド工程なしで動かしやすい構成を維持し�
 │   ├── public/
 │   └── server/
 ├── tests/
-│   ├── server.test.mjs
-│   └── consultation-policy.test.mjs
+│   ├── domain/
+│   ├── integration/
+│   └── server/
 ├── screenshots/
 └── package.json
 ```
 
 次に分割する候補:
 
-- `scripts/` の検証スクリプトを `tests/` へ移す。
+- `scripts/` の代表ケース確認を、必要に応じて `tests/integration/` へ移す。
 - `src/server/app.mjs` の `handleChat` をAPIルーターとして分離する。
 - サーバー側DB保存を導入する場合は `src/server/storage/` か `src/domain/consultation-history.mjs` を追加する。
+
+## テスト方針
+
+- `npm run check`: 構文チェック。ファイルが読み込めるかを軽く確認する。
+- `npm test`: `node:test` による自動テスト。ドメインロジックとAPIの仕様を確認する。
+- `npm run smoke`: アプリを実際に起動し、トップページ、静的配信、安全文言、通常相談、緊急分岐を確認する。
+- `npm run check:consultation`: Phase 1に向けた代表相談ケースをまとめて確認する。
 
 ## 手動確認リスト
 
