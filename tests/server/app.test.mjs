@@ -9,6 +9,18 @@ test("serves the top page and does not serve private project files", async () =>
     assert.equal(topPage.status, 200);
     assert.match(await topPage.text(), /Kokoro Navi AI/);
 
+    const termsPage = await fetch(`${baseUrl}/terms.html`);
+    assert.equal(termsPage.status, 200);
+    assert.match(await termsPage.text(), /利用規約/);
+
+    const privacyPage = await fetch(`${baseUrl}/privacy.html`);
+    assert.equal(privacyPage.status, 200);
+    assert.match(await privacyPage.text(), /プライバシーポリシー/);
+
+    const disclaimerPage = await fetch(`${baseUrl}/disclaimer.html`);
+    assert.equal(disclaimerPage.status, 200);
+    assert.match(await disclaimerPage.text(), /免責文言/);
+
     assert.equal((await fetch(`${baseUrl}/server.mjs`)).status, 404);
     assert.equal((await fetch(`${baseUrl}/package.json`)).status, 404);
     assert.equal((await fetch(`${baseUrl}/.git/config`)).status, 404);

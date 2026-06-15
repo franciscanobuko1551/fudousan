@@ -2,7 +2,14 @@ import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { extname, join, relative, resolve } from "node:path";
 
-const staticFiles = new Set(["/index.html", "/styles.css", "/script.js"]);
+const staticFiles = new Set([
+  "/index.html",
+  "/terms.html",
+  "/privacy.html",
+  "/disclaimer.html",
+  "/styles.css",
+  "/script.js",
+]);
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",

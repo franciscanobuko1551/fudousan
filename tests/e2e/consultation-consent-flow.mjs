@@ -32,6 +32,25 @@ async function submitAndWaitForChat(page) {
   return response;
 }
 
+async function expectLegalDraftLinks(page, baseUrl) {
+  const legalPages = [
+    ["terms.html", "利用規約"],
+    ["privacy.html", "プライバシーポリシー"],
+    ["disclaimer.html", "免責文言"],
+  ];
+
+  await page.goto(baseUrl);
+
+  for (const [href, title] of legalPages) {
+    await page.locator(`a[href="${href}"]`).click();
+    await page.locator("h1").waitFor({ timeout: 5000 });
+    assert.match(await page.locator("h1").innerText(), new RegExp(title));
+    assert.match(await page.locator("body").innerText(), /Phase 1 draft/);
+    await page.locator('a[href="index.html"]').click();
+    await page.locator("#consultation-form").waitFor({ timeout: 5000 });
+  }
+}
+
 async function runConsentAndSafetyFlow(baseUrl) {
   const browser = await chromium.launch();
 
@@ -43,6 +62,8 @@ async function runConsentAndSafetyFlow(baseUrl) {
         chatRequestCount += 1;
       }
     });
+
+    await expectLegalDraftLinks(page, baseUrl);
 
     await page.goto(baseUrl);
     await page.locator("#message").fill("I want to talk about work stress.");

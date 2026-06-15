@@ -22,6 +22,9 @@ try {
     "この相談をこの端末のブラウザだけに保存する",
     "利用上の注意を確認しました",
     "医療・法律・金融・緊急対応の代わりではないことを確認してから送信してください。",
+    "利用規約",
+    "プライバシーポリシー",
+    "免責文言",
   ];
 
   for (const text of requiredPageTexts) {
@@ -34,6 +37,21 @@ try {
   await expectStatus(baseUrl, "/package.json", 404);
   await expectStatus(baseUrl, "/.git/config", 404);
   await expectStatus(baseUrl, "/%E0%A4%A", 400);
+
+  const legalPages = [
+    ["/terms.html", "利用規約"],
+    ["/privacy.html", "プライバシーポリシー"],
+    ["/disclaimer.html", "免責文言"],
+  ];
+
+  for (const [path, title] of legalPages) {
+    const response = await expectStatus(baseUrl, path, 200);
+    const text = await response.text();
+
+    if (!text.includes(title) || !text.includes("Kokoro Navi AI")) {
+      throw new Error(`${path} did not include required legal draft text.`);
+    }
+  }
 
   const fallback = await postChat(baseUrl, {
     genre: "不安",

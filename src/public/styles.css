@@ -296,6 +296,73 @@ button:focus-visible:not(:disabled) {
   padding-left: 0.2em;
 }
 
+.policy-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.policy-links a,
+.back-link {
+  color: var(--gold);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.policy-links a {
+  border-bottom: 1px solid rgba(185, 147, 75, 0.34);
+}
+
+.policy-links a:focus-visible,
+.policy-links a:hover,
+.back-link:focus-visible,
+.back-link:hover {
+  color: #8a662c;
+}
+
+.legal-page {
+  grid-template-columns: minmax(0, 800px);
+  justify-content: center;
+}
+
+.legal-card {
+  border: 1px solid rgba(185, 147, 75, 0.16);
+  border-radius: var(--radius-medium);
+  padding: clamp(24px, 5vw, 44px);
+  background: rgba(255, 253, 251, 0.9);
+  box-shadow: var(--shadow);
+  line-height: 1.85;
+}
+
+.legal-card h1 {
+  margin: 0 0 18px;
+  font-size: clamp(2rem, 5vw, 3.8rem);
+}
+
+.legal-card h2 {
+  margin: 30px 0 8px;
+  font-size: 1.15rem;
+}
+
+.legal-card p,
+.legal-card ul {
+  color: var(--muted);
+}
+
+.legal-card ul {
+  padding-left: 1.25em;
+}
+
+.legal-lead {
+  margin-bottom: 28px;
+}
+
+.back-link {
+  display: inline-flex;
+  margin-bottom: 20px;
+}
+
 .answer-body.loading + .follow-up-panel button:disabled,
 .consultation-form button:disabled {
   cursor: wait;
