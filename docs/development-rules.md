@@ -81,6 +81,8 @@ Phase 1へ正式移行する前に残る主な確認:
 - APIエラー、通信失敗、履歴保存失敗、長文入力などの異常系UI確認を固める。
 - クローズドMVPで試してもらう対象、フィードバック回収方法、問い合わせ先を決める。
 
+詳細な移行チェックリストは [phase-1-readiness.md](phase-1-readiness.md) に置く。
+
 ### Phase 1: クローズドMVP
 
 目的: 限られた利用者に試してもらい、価値と安全性を検証する。
@@ -97,6 +99,7 @@ Phase 1へ正式移行する前に残る主な確認:
 準備中の叩き台:
 
 - [legal-and-safety-drafts.md](legal-and-safety-drafts.md): 利用規約、プライバシーポリシー、免責文言の下書き。
+- [phase-1-readiness.md](phase-1-readiness.md): Phase 1移行判定、回答品質レビュー、異常系UI QA、クローズドMVP運用の確認表。
 
 ### Phase 2: 継続相談体験
 
@@ -187,7 +190,8 @@ Phase 0.5 では、ビルド工程なしで動かしやすい構成を維持し�
 ├── server.mjs
 ├── docs/
 │   ├── development-rules.md
-│   └── legal-and-safety-drafts.md
+│   ├── legal-and-safety-drafts.md
+│   └── phase-1-readiness.md
 ├── scripts/
 │   ├── check-helpers.mjs
 │   ├── consultation-cases-check.mjs
@@ -229,7 +233,8 @@ Phase 0.5 では、ビルド工程なしで動かしやすい構成を維持し�
 ├── docs/
 │   ├── development-rules.md
 │   ├── safety-policy.md
-│   └── product-notes.md
+│   ├── product-notes.md
+│   └── phase-1-readiness.md
 ├── src/
 │   ├── domain/
 │   ├── public/
