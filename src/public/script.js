@@ -179,13 +179,19 @@ function renderHistory() {
 }
 
 async function requestAiReply(genre, message, mode = "initial") {
-  const response = await fetch("/api/chat", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ genre, message, mode }),
-  });
+  let response;
+
+  try {
+    response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ genre, message, mode }),
+    });
+  } catch {
+    throw new Error("通信がうまくいきませんでした。少し時間を置いて、もう一度送ってください。");
+  }
 
   const data = await response.json().catch(() => ({}));
 
