@@ -53,6 +53,7 @@ Kokoro Navi AI は、人生相談、心のモヤモヤ、不安、人間関係�
 - `npm test` でドメインロジックとAPIの自動テストが成功する。
 - `npm run smoke` でトップページ、通常相談、緊急分岐、静的配信の基本安全性を確認できる。
 - `npm run check:consultation` で代表的な相談APIケースを確認できる。
+- `npm run test:e2e` で利用上の注意確認と緊急時安全優先のUIフローを確認できる。
 
 ### Phase 1: クローズドMVP
 
@@ -108,6 +109,7 @@ Kokoro Navi AI は、人生相談、心のモヤモヤ、不安、人間関係�
 - ドメインロジックやAPI挙動を変えた場合は `npm test` を実行する。
 - サーバー動作や配信範囲を変えた場合は `npm run smoke` も実行する。
 - 相談API、ジャンル、深掘りモード、安全分岐を変えた場合は `npm run check:consultation` も実行する。
+- 相談送信、利用上の注意確認、緊急時安全優先のUIフローを変えた場合は `npm run test:e2e` も実行する。
 
 ## 安全ポリシーの補足
 
@@ -180,6 +182,8 @@ Phase 0.5 では、ビルド工程なしで動かしやすい構成を維持し�
 ├── tests/
 │   ├── domain/
 │   │   └── consultation-policy.test.mjs
+│   ├── e2e/
+│   │   └── consultation-consent-flow.mjs
 │   ├── helpers/
 │   │   └── server-test-helpers.mjs
 │   ├── public/
@@ -206,6 +210,7 @@ Phase 0.5 では、ビルド工程なしで動かしやすい構成を維持し�
 │   └── server/
 ├── tests/
 │   ├── domain/
+│   ├── e2e/
 │   ├── integration/
 │   └── server/
 ├── screenshots/
@@ -224,6 +229,7 @@ Phase 0.5 では、ビルド工程なしで動かしやすい構成を維持し�
 - `npm test`: `node:test` による自動テスト。ドメインロジックとAPIの仕様を確認する。
 - `npm run smoke`: アプリを実際に起動し、トップページ、静的配信、安全文言、通常相談、緊急分岐を確認する。
 - `npm run check:consultation`: Phase 1に向けた代表相談ケースをまとめて確認する。
+- `npm run test:e2e`: Playwrightで利用上の注意確認、深掘り送信、緊急時安全優先のUIフローを確認する。
 
 ## 手動確認リスト
 

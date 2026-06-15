@@ -67,6 +67,7 @@ npm start
 
 ```bash
 npx playwright install chromium
+npm run test:e2e
 npm run screenshot:mobile
 ```
 
@@ -85,4 +86,5 @@ npm run check
 npm test
 npm run smoke
 npm run check:consultation
+npm run test:e2e
 ```
