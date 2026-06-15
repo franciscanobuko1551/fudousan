@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.mjs",
-    "check": "node --check server.mjs && node --check src/server/app.mjs && node --check src/server/openai-client.mjs && node --check src/server/static-files.mjs && node --check src/domain/consultation-policy.mjs && node --check src/domain/crisis-detection.mjs && node --check src/domain/fallback-replies.mjs && node --check src/public/script.js && node --check scripts/check-helpers.mjs && node --check scripts/smoke-check.mjs && node --check scripts/consultation-cases-check.mjs && node --check tests/helpers/server-test-helpers.mjs && node --check tests/domain/consultation-policy.test.mjs && node --check tests/server/app.test.mjs",
+    "check": "node --check server.mjs && node --check src/server/app.mjs && node --check src/server/openai-client.mjs && node --check src/server/static-files.mjs && node --check src/domain/consultation-policy.mjs && node --check src/domain/crisis-detection.mjs && node --check src/domain/fallback-replies.mjs && node --check src/public/script.js && node --check scripts/check-helpers.mjs && node --check scripts/smoke-check.mjs && node --check scripts/consultation-cases-check.mjs && node --check tests/helpers/server-test-helpers.mjs && node --check tests/domain/consultation-policy.test.mjs && node --check tests/public/consent-ui.test.mjs && node --check tests/server/app.test.mjs",
     "test": "node --test tests/**/*.test.mjs",
     "smoke": "node scripts/smoke-check.mjs",
     "check:consultation": "node scripts/consultation-cases-check.mjs",

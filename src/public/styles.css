@@ -222,6 +222,11 @@ textarea {
   line-height: 1.55;
 }
 
+.consent-option {
+  border-color: rgba(185, 147, 75, 0.26);
+  background: rgba(255, 247, 241, 0.86);
+}
+
 button {
   margin-top: 8px;
   border: 0;

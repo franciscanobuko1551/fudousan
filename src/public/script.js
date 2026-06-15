@@ -2,6 +2,7 @@ const form = document.querySelector("#consultation-form");
 const genreInput = document.querySelector("#genre");
 const messageInput = document.querySelector("#message");
 const saveHistoryInput = document.querySelector("#save-history");
+const termsConsentInput = document.querySelector("#terms-consent");
 const answer = document.querySelector("#answer");
 const submitButton = form.querySelector("button[type='submit']");
 const followUpButtons = [...document.querySelectorAll("[data-mode]")];
@@ -13,6 +14,17 @@ const clearHistoryButton = document.querySelector("#clear-history");
 const historyStorageKey = "kokoro-navi-ai:consultation-history";
 const maxHistoryItems = 8;
 const maxMessageLength = 2000;
+const crisisKeywords = [
+  "死にたい",
+  "消えたい",
+  "自殺",
+  "自傷",
+  "殺したい",
+  "殴られる",
+  "虐待",
+  "DV",
+  "逃げたい",
+];
 
 let currentConsultation = null;
 
@@ -27,6 +39,30 @@ const modeLabels = {
 function showAnswer(message, { isEmpty = false } = {}) {
   answer.textContent = message;
   answer.classList.toggle("empty", isEmpty);
+}
+
+function hasClientCrisisSignal(message) {
+  return crisisKeywords.some((keyword) => message.includes(keyword));
+}
+
+function canSendWithoutConsent(message) {
+  return termsConsentInput.checked || hasClientCrisisSignal(message);
+}
+
+function showConsentRequiredMessage() {
+  showAnswer("利用上の注意を確認してから送ってください。Kokoro Navi AIは、医療・法律・金融・緊急対応の代わりではありません。", {
+    isEmpty: false,
+  });
+  termsConsentInput.focus();
+}
+
+function guardConsentBeforeSending(message) {
+  if (canSendWithoutConsent(message)) {
+    return true;
+  }
+
+  showConsentRequiredMessage();
+  return false;
 }
 
 function setActionButtons() {
@@ -60,6 +96,7 @@ function resetConsultation() {
   currentConsultation = null;
   form.reset();
   saveHistoryInput.checked = true;
+  termsConsentInput.checked = false;
   showAnswer("相談内容を入力してボタンを押すと、Kokoro Navi AIがやさしく気持ちを整理します。", {
     isEmpty: true,
   });
@@ -214,12 +251,20 @@ form.addEventListener("submit", async (event) => {
     return;
   }
 
+  if (!guardConsentBeforeSending(message)) {
+    return;
+  }
+
   await sendConsultation({ genre, message, saveToHistory });
 });
 
 followUpButtons.forEach((button) => {
   button.addEventListener("click", async () => {
     if (!currentConsultation) {
+      return;
+    }
+
+    if (!guardConsentBeforeSending(currentConsultation.message)) {
       return;
     }
 
