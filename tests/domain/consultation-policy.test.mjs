@@ -46,6 +46,14 @@ test("fallback replies include genre, message, and mode-specific guidance", () =
   assert.match(reply, /今日の小さな一歩/);
 });
 
+test("fallback replies preserve professional boundaries", () => {
+  const reply = createFallbackReply("人生相談", "眠れず動悸が続いている。病気ですか？", "initial");
+
+  assert.match(reply, /医療・法律・金融/);
+  assert.match(reply, /専門家/);
+  assert.match(reply, /診断、治療、法的判断、金融判断の代わりではありません/);
+});
+
 test("unknown fallback mode uses the initial guidance", () => {
   const reply = createFallbackReply("不安", "少し落ち着きたいです", "unknown-mode");
 

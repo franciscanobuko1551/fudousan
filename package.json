@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "start": "node server.mjs",
-    "check": "node --check server.mjs && node --check src/server/app.mjs && node --check src/server/openai-client.mjs && node --check src/server/static-files.mjs && node --check src/domain/consultation-policy.mjs && node --check src/domain/crisis-detection.mjs && node --check src/domain/fallback-replies.mjs && node --check src/public/script.js && node --check scripts/check-helpers.mjs && node --check scripts/smoke-check.mjs && node --check scripts/consultation-cases-check.mjs && node --check tests/helpers/server-test-helpers.mjs && node --check tests/domain/consultation-policy.test.mjs && node --check tests/e2e/consultation-consent-flow.mjs && node --check tests/e2e/error-handling-flow.mjs && node --check tests/public/consent-ui.test.mjs && node --check tests/public/legal-pages.test.mjs && node --check tests/server/app.test.mjs",
+    "check": "node --check server.mjs && node --check src/server/app.mjs && node --check src/server/openai-client.mjs && node --check src/server/static-files.mjs && node --check src/domain/consultation-policy.mjs && node --check src/domain/crisis-detection.mjs && node --check src/domain/fallback-replies.mjs && node --check src/public/script.js && node --check scripts/check-helpers.mjs && node --check scripts/smoke-check.mjs && node --check scripts/consultation-cases-check.mjs && node --check scripts/response-quality-check.mjs && node --check tests/helpers/server-test-helpers.mjs && node --check tests/domain/consultation-policy.test.mjs && node --check tests/e2e/consultation-consent-flow.mjs && node --check tests/e2e/error-handling-flow.mjs && node --check tests/public/consent-ui.test.mjs && node --check tests/public/legal-pages.test.mjs && node --check tests/server/app.test.mjs",
     "test": "node --test tests/**/*.test.mjs",
     "test:e2e": "node tests/e2e/consultation-consent-flow.mjs && node tests/e2e/error-handling-flow.mjs",
     "smoke": "node scripts/smoke-check.mjs",
     "check:consultation": "node scripts/consultation-cases-check.mjs",
+    "check:quality": "node scripts/response-quality-check.mjs",
     "screenshot:mobile": "playwright screenshot --viewport-size=390,900 http://127.0.0.1:4173 screenshots/mobile.png"
   },
   "engines": {

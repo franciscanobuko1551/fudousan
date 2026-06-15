@@ -89,5 +89,6 @@ npm run check
 npm test
 npm run smoke
 npm run check:consultation
+npm run check:quality
 npm run test:e2e
 ```
